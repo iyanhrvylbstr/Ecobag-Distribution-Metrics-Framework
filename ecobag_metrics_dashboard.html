@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecobag Distribution Metrics Framework</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin-bottom: 40px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .supplies { border-left-color: #3498db; }
+        .attendance { border-left-color: #e74c3c; }
+        .materials { border-left-color: #f39c12; }
+        .stockout { border-left-color: #e67e22; }
+        .cleanliness { border-left-color: #27ae60; }
+        .productivity { border-left-color: #9b59b6; }
+        
+        .metric-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .metric-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .metric-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .metric-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-name {
+            font-weight: 500;
+            color: #34495e;
+        }
+        
+        .metric-target {
+            background: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        .sheets-section {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
+        
+        .sheets-title {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .sheets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .sheet-template {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .sheet-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        
+        .sheet-columns {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .implementation-guide {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .guide-title {
+            font-size: 1.5em;
+            color: #495057;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .guide-icon {
+            width: 30px;
+            height: 30px;
+            background: #28a745;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .step {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .step-number {
+            background: #28a745;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .formula-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        
+        .alert-box {
+            background: linear-gradient(135deg, #ff7675, #fd79a8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Ecobag Distribution Metrics Framework</h1>
+        <p class="subtitle">Comprehensive KPI System for Process Optimization</p>
+        
+        <div class="metrics-grid">
+            <div class="metric-card supplies">
+                <div class="metric-title">📦 Supplies Team Performance</div>
+                <ul class="metric-list">
+                    <li>
+                        <span class="metric-name">Distribution Accuracy Rate</span>
+                        <span class="metric-target">≥98%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Beginning Setup Time</span>
+                        <span class="metric-target">≤20 min</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Counter Coverage Rate</span>
+                        <span class="metric-target">100%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Task Completion Rate</span>
+                        <span class="metric-target">≥95%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Relief Response Time</span>
+                        <span class="metric-target">≤5 min</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="metric-card attendance">
+                <div class="metric-title">👥 Absenteeism & Staffing</div>
+                <ul class="metric-list">
+                    <li>
+                        <span class="metric-name">Daily Attendance Rate</span>
+                        <span class="metric-target">≥95%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Punctuality Rate</span>
+                        <span class="metric-target">≥98%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Cluster Coverage Rate</span>
+                        <span class="metric-target">100%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Relief Availability</span>
+                        <span class="metric-target">≥2 per shift</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Schedule Adherence</span>
+                        <span class="metric-target">≥97%</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="metric-card materials">
+                <div class="metric-title">🏷️ Working Materials Efficiency</div>
+                <ul class="metric-list">
+                    <li>
+                        <span class="metric-name">Material Waste Rate</span>
+                        <span class="metric-target">≤5%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Reuse Rate (P-Twine)</span>
+                        <span class="metric-target">≥80%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Prep Time per Set</span>
+                        <span class="metric-target">≤2 min</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Material Availability</span>
+                        <span class="metric-target">≥98%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Quality Rate</span>
+                        <span class="metric-target">≥95%</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="metric-card stockout">
+                <div class="metric-title">📊 Stock Out Rate (Priority)</div>
+                <ul class="metric-list">
+                    <li>
+                        <span class="metric-name">Ecobag Stockout Rate</span>
+                        <span class="metric-target">≤2%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Critical Material Stockout</span>
+                        <span class="metric-target">0%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Inventory Accuracy</span>
+                        <span class="metric-target">≥98%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Replenishment Speed</span>
+                        <span class="metric-target">≤30 min</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Buffer Stock Days</span>
+                        <span class="metric-target">≥3 days</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="metric-card cleanliness">
+                <div class="metric-title">🧹 Cleanliness & Organization</div>
+                <ul class="metric-list">
+                    <li>
+                        <span class="metric-name">Area Cleanliness Score</span>
+                        <span class="metric-target">≥4.5/5</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Organization Score</span>
+                        <span class="metric-target">≥4.5/5</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">End-of-Shift Cleanup</span>
+                        <span class="metric-target">100%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Material Storage Compliance</span>
+                        <span class="metric-target">≥95%</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Safety Incidents</span>
+                        <span class="metric-target">0</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="metric-card productivity">
+                <div class="metric-title">⚡ Units Per Hour (UPH)</div>
+                <ul class="metric-list">
+                    <li>
+                        <span class="metric-name">Ecobags Distributed/Hour</span>
+                        <span class="metric-target">≥150</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Sets Prepared/Hour</span>
+                        <span class="metric-target">≥30</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Counter Service Rate</span>
+                        <span class="metric-target">≥10/hour</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Inventory Cycle Time</span>
+                        <span class="metric-target">≤15 min</span>
+                    </li>
+                    <li>
+                        <span class="metric-name">Overall Efficiency</span>
+                        <span class="metric-target">≥85%</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="alert-box">
+            🎯 <strong>Success Formula:</strong> Consistent measurement + Daily action + Weekly analysis = Optimized operations
+        </div>
+        
+        <div class="sheets-section">
+            <div class="sheets-title">📊 Google Sheets Templates Structure</div>
+            <div class="sheets-grid">
+                <div class="sheet-template">
+                    <div class="sheet-name">1. Daily Operations Tracker</div>
+                    <div class="sheet-columns">
+                        • Date, Shift, Cluster<br>
+                        • Staff Present/Absent<br>
+                        • Materials Distributed<br>
+                        • Stockouts (Y/N + Duration)<br>
+                        • Tasks Completed (%)<br>
+                        • Issues/Notes
+                    </div>
+                </div>
+                
+                <div class="sheet-template">
+                    <div class="sheet-name">2. Attendance & Punctuality</div>
+                    <div class="sheet-columns">
+                        • Employee ID, Name<br>
+                        • Scheduled Time vs Actual<br>
+                        • Attendance Status<br>
+                        • Late Minutes<br>
+                        • Relief Coverage Required<br>
+                        • Monthly Summary
+                    </div>
+                </div>
+                
+                <div class="sheet-template">
+                    <div class="sheet-name">3. Inventory & Stock Management</div>
+                    <div class="sheet-columns">
+                        • Item Type, Quantity<br>
+                        • Beginning/Ending Count<br>
+                        • Distributed Amount<br>
+                        • Returned Amount<br>
+                        • Waste/Damage Count<br>
+                        • Reorder Alerts
+                    </div>
+                </div>
+                
+                <div class="sheet-template">
+                    <div class="sheet-name">4. Quality & Cleanliness Audit</div>
+                    <div class="sheet-columns">
+                        • Audit Date, Inspector<br>
+                        • Cleanliness Score (1-5)<br>
+                        • Organization Score (1-5)<br>
+                        • Material Quality Check<br>
+                        • Safety Compliance<br>
+                        • Action Items
+                    </div>
+                </div>
+                
+                <div class="sheet-template">
+                    <div class="sheet-name">5. Productivity Metrics</div>
+                    <div class="sheet-columns">
+                        • Time Period, Staff Count<br>
+                        • Units Distributed<br>
+                        • Tasks Completed<br>
+                        • Service Time per Counter<br>
+                        • Efficiency Calculations<br>
+                        • Trend Analysis
+                    </div>
+                </div>
+                
+                <div class="sheet-template">
+                    <div class="sheet-name">6. KPI Dashboard</div>
+                    <div class="sheet-columns">
+                        • All Metrics Summary<br>
+                        • Target vs Actual<br>
+                        • Traffic Light System<br>
+                        • Trend Charts<br>
+                        • Action Required Alerts<br>
+                        • Monthly Reports
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="implementation-guide">
+            <div class="guide-title">
+                <div class="guide-icon">📋</div>
+                Implementation Guide
+            </div>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Setup Google Sheets Structure</strong><br>
+                Create 6 separate sheets in one Google Sheets workbook. Use data validation for dropdown menus and conditional formatting for visual alerts.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Configure Automated Calculations</strong><br>
+                <div class="formula-box">
+                    Stock Out Rate = (Hours with Stockout / Total Operating Hours) × 100<br>
+                    Attendance Rate = (Present Staff / Scheduled Staff) × 100<br>
+                    UPH = Total Units Distributed / Total Working Hours
+                </div>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Set Up Real-time Monitoring</strong><br>
+                Use Google Sheets mobile app for real-time data entry. Create shared access for Team Leaders and management for instant visibility.
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Establish Daily Routines</strong><br>
+                • 8:30 AM: Record attendance and setup times<br>
+                • 12:00 PM: Mid-day inventory check<br>
+                • 6:00 PM: End-of-shift metrics capture<br>
+                • 9:30 PM: Daily summary completion
+            </div>
+            
+            <div class="step">
+                <span class="step-number">5</span>
+                <strong>Weekly Analysis & Action</strong><br>
+                Review trends, identify improvement opportunities, and adjust processes. Focus heavily on stock-out prevention as your priority metric.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
